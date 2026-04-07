@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Doctor {
+  id              Int      @id @default(autoincrement())
+  name            String
+  department      String
+  specialization  String
+  experienceYears Int
+  rating          Float
+  slots           Slot[]
+}
+
+model Slot {
+  id       Int     @id @default(autoincrement())
+  time     String
+  isBooked Boolean @default(false)
+  doctorId Int
+  doctor   Doctor  @relation(fields: [doctorId], references: [id])
+}
+
+model Appointment {
+  id         Int      @id @default(autoincrement())
+  doctorName String
+  slotTime   String
+  slotId     Int
+  createdAt  DateTime @default(now())
+}
